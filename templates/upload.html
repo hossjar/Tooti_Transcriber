@@ -52,8 +52,8 @@
     <div class="container">
         <h1>Persian Audio Transcription</h1>
         <form id="uploadForm" enctype="multipart/form-data">
-            <input type="file" name="file" accept=".wav,.mp3,.ogg" required>
-            <input type="submit" value="Transcribe">
+            <input type="file" name="file" accept=".wav,.mp3,.ogg,.mp4" required>
+            <input type="submit" value="Benevis">
         </form>
         <div id="status"></div>
         <div id="timer"></div>
@@ -95,7 +95,7 @@
                     resultDiv.innerHTML = 'Error: ' + data.error;
                 } else {
                     statusDiv.innerHTML = 'Completed';
-                    resultDiv.innerHTML = 'Transcript: ' + data.transcript;
+                    resultDiv.innerHTML = 'Transcript:     '+ data.transcript;
                 }
             })
             .catch(error => {

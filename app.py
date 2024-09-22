@@ -3,12 +3,16 @@ from speechmatics.models import ConnectionSettings
 from speechmatics.batch_client import BatchClient
 from httpx import HTTPStatusError
 import os
+from dotenv import load_dotenv
+import os 
+
+load_dotenv()
+SPEECHMATICS_API_KEY = os.getenv('SPEECHMATICS_API_KEY')
+
 
 app = Flask(__name__)
-
-API_KEY = "P2JLrpyQtwQTtYzKsLZjeNCIbwAYGXdM"  # Replace with your actual Speechmatics API key
 UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'wav', 'mp3', 'ogg'}
+ALLOWED_EXTENSIONS = {'wav', 'mp3', 'ogg', 'mp4'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -18,7 +22,7 @@ def allowed_file(filename):
 def transcribe_audio(file_path):
     settings = ConnectionSettings(
         url="https://asr.api.speechmatics.com/v2",
-        auth_token=API_KEY,
+        auth_token=SPEECHMATICS_API_KEY,
     )
     
     conf = {
