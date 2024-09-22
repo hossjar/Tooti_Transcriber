@@ -42,7 +42,7 @@
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
-        #result {
+        #result, #status, #timer {
             margin-top: 20px;
             color: #333;
         }
@@ -55,6 +55,8 @@
             <input type="file" name="file" accept=".wav,.mp3,.ogg" required>
             <input type="submit" value="Transcribe">
         </form>
+        <div id="status"></div>
+        <div id="timer"></div>
         <div id="result"></div>
     </div>
 
@@ -62,21 +64,45 @@
         document.getElementById('uploadForm').addEventListener('submit', function(e) {
             e.preventDefault();
             var formData = new FormData(this);
+            var statusDiv = document.getElementById('status');
+            var timerDiv = document.getElementById('timer');
+            var resultDiv = document.getElementById('result');
+            var startTime = Date.now();
+
+            statusDiv.innerHTML = 'File received';
+            resultDiv.innerHTML = '';
+            timerDiv.innerHTML = '';
+
+            function updateTimer() {
+                var elapsed = Math.floor((Date.now() - startTime) / 1000);
+                timerDiv.innerHTML = 'Time elapsed: ' + elapsed + ' seconds';
+            }
+
+            var timerInterval = setInterval(updateTimer, 1000);
+
             fetch('/', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                statusDiv.innerHTML = 'Transcribing...';
+                return response.json();
+            })
             .then(data => {
+                clearInterval(timerInterval);
                 if (data.error) {
-                    document.getElementById('result').innerHTML = 'Error: ' + data.error;
+                    statusDiv.innerHTML = 'Error';
+                    resultDiv.innerHTML = 'Error: ' + data.error;
                 } else {
-                    document.getElementById('result').innerHTML = 'Transcript: ' + data.transcript;
+                    statusDiv.innerHTML = 'Completed';
+                    resultDiv.innerHTML = 'Transcript: ' + data.transcript;
                 }
             })
             .catch(error => {
+                clearInterval(timerInterval);
                 console.error('Error:', error);
-                document.getElementById('result').innerHTML = 'An error occurred';
+                statusDiv.innerHTML = 'An error occurred';
+                resultDiv.innerHTML = 'An error occurred';
             });
         });
     </script>
