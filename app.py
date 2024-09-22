@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__)
 
-API_KEY = "YOUR_API_KEY"  # Replace with your actual Speechmatics API key
+API_KEY = "P2JLrpyQtwQTtYzKsLZjeNCIbwAYGXdM"  # Replace with your actual Speechmatics API key
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'wav', 'mp3', 'ogg'}
 
