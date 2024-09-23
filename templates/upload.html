@@ -6,54 +6,73 @@
     <title>Persian Audio Transcription</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f2f5;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
         }
         .container {
-            background-color: #fff;
-            padding: 20px;
+            background-color: white;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 100%;
-            max-width: 400px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
         }
         h1 {
             color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
         input[type="file"] {
-            margin: 20px 0;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
         }
         input[type="submit"] {
-            background-color: #007bff;
-            color: #fff;
+            background-color: #4CAF50;
+            color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.3s;
         }
         input[type="submit"]:hover {
-            background-color: #0056b3;
+            background-color: #45a049;
         }
-        #result, #status, #timer {
+        #status, #timer {
+            text-align: center;
             margin-top: 20px;
-            color: #333;
+            font-weight: bold;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Persian Audio Transcription</h1>
-        <form id="uploadForm" enctype="multipart/form-data">
-            <input type="file" name="file" accept=".wav,.mp3,.ogg,.mp4" required>
-            <input type="submit" value="Benevis">
+        <form id="uploadForm">
+            <input type="file" name="file" accept=".wav,.mp3,.ogg" required>
+            <input type="submit" value="Transcribe">
         </form>
         <div id="status"></div>
         <div id="timer"></div>
@@ -61,48 +80,49 @@
     </div>
 
     <script>
-        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+        const form = document.getElementById('uploadForm');
+        const status = document.getElementById('status');
+        const timer = document.getElementById('timer');
+        const result = document.getElementById('result');
+        let startTime;
+        let timerInterval;
+
+        function updateTimer() {
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsedTime / 60);
+            const seconds = elapsedTime % 60;
+            timer.textContent = `Time elapsed: ${minutes}m ${seconds}s`;
+        }
+
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
-            var formData = new FormData(this);
-            var statusDiv = document.getElementById('status');
-            var timerDiv = document.getElementById('timer');
-            var resultDiv = document.getElementById('result');
-            var startTime = Date.now();
-
-            statusDiv.innerHTML = 'File received';
-            resultDiv.innerHTML = '';
-            timerDiv.innerHTML = '';
-
-            function updateTimer() {
-                var elapsed = Math.floor((Date.now() - startTime) / 1000);
-                timerDiv.innerHTML = 'Time elapsed: ' + elapsed + ' seconds';
-            }
-
-            var timerInterval = setInterval(updateTimer, 1000);
+            const formData = new FormData(this);
+            
+            status.textContent = 'File received. Starting transcription...';
+            result.textContent = '';
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 1000);
 
             fetch('/', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => {
-                statusDiv.innerHTML = 'Transcribing...';
-                return response.json();
-            })
+            .then(response => response.json())
             .then(data => {
                 clearInterval(timerInterval);
                 if (data.error) {
-                    statusDiv.innerHTML = 'Error';
-                    resultDiv.innerHTML = 'Error: ' + data.error;
+                    status.textContent = 'Error occurred';
+                    result.textContent = 'Error: ' + data.error;
                 } else {
-                    statusDiv.innerHTML = 'Completed';
-                    resultDiv.innerHTML = 'Transcript:     '+ data.transcript;
+                    status.textContent = 'Transcription complete!';
+                    result.textContent = 'Transcript: ' + data.transcript;
                 }
             })
             .catch(error => {
                 clearInterval(timerInterval);
                 console.error('Error:', error);
-                statusDiv.innerHTML = 'An error occurred';
-                resultDiv.innerHTML = 'An error occurred';
+                status.textContent = 'An error occurred';
+                result.textContent = 'Please try again later.';
             });
         });
     </script>

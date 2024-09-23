@@ -29,6 +29,8 @@ def transcribe_audio(file_path):
         "type": "transcription",
         "transcription_config": {
             "language": "fa"  # Persian language code
+        #    "operating_point": "enhanced"
+
         }
     }
     
