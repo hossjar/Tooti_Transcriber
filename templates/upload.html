@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Persian Audio Transcription</title>
+    <title>AI Audio Transcription</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -65,12 +66,24 @@
             overflow-y: auto;
             background-color: #f9f9f9;
         }
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .header-icon {
+            width: 32px;
+            height: 32px;
+        }        
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Persian Audio Transcription</h1>
-        <form id="uploadForm">
+        <div class="header-container">
+            <img src="{{ url_for('static', filename='header-icon.png') }}" alt="Transcription Icon" class="header-icon">
+            <h1>Persian Audio Transcription</h1>
+        </div>        <form id="uploadForm">
             <input type="file" name="file" accept=".wav,.mp3,.ogg" required>
             <input type="submit" value="Transcribe">
         </form>
