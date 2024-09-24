@@ -28,8 +28,8 @@ def transcribe_audio(file_path):
     conf = {
         "type": "transcription",
         "transcription_config": {
-            "language": "fa",  # Persian language code
-            "operating_point": "enhanced"
+            "language": "fa"  # Persian language code
+        #    "operating_point": "enhanced"
 
         }
     }
