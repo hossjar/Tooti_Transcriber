@@ -1,3 +1,5 @@
 venv/
 .env
 uploads/
+app_old.py
+upload_old.html

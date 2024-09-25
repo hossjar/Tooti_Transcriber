@@ -4,13 +4,15 @@ from speechmatics.batch_client import BatchClient
 from httpx import HTTPStatusError
 import os
 from dotenv import load_dotenv
-import os 
+import time
 
 load_dotenv()
 SPEECHMATICS_API_KEY = os.getenv('SPEECHMATICS_API_KEY')
 
 
+
 app = Flask(__name__)
+
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'wav', 'mp3', 'ogg', 'mp4'}
 
@@ -29,8 +31,6 @@ def transcribe_audio(file_path):
         "type": "transcription",
         "transcription_config": {
             "language": "fa"  # Persian language code
-        #    "operating_point": "enhanced"
-
         }
     }
     
@@ -61,9 +61,16 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(filename)
-            transcript = transcribe_audio(filename)
-            os.remove(filename)  # Remove the file after transcription
-            return jsonify({'transcript': transcript})
+            try:
+                
+                transcript = transcribe_audio(filename)
+                os.remove(filename)  # Remove the file after transcription
+                return jsonify({'transcript': transcript})
+            except Exception as e:
+                os.remove(filename)
+                return jsonify({'error' : str(e)})
+            else:
+                return jsonify({'error' : 'File type not allowed'})
     return render_template('upload.html')
 
 if __name__ == '__main__':
