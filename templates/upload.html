@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Audio Transcription</title>
+    <title>Persian Audio Transcription</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <style>
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f0f2f5;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,93 +23,124 @@
             padding: 30px;
             width: 90%;
             max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .header-icon {
+            width: 32px;
+            height: 32px;
         }
         h1 {
             color: #333;
-            text-align: center;
+            margin: 0;
+        }
+        .file-input-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             margin-bottom: 20px;
         }
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        input[type="file"] {
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 4px;
-        }
-        input[type="submit"] {
+        .file-input-button {
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 12px;
+            padding: 12px 20px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s;
         }
-        input[type="submit"]:hover {
+        .file-input-button:hover {
+            background-color: #45a049;
+        }
+        .file-input-label {
+            font-size: 16px;
+            color: #666;
+        }
+        .transcribe-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 0 auto 20px;
+        }
+        .transcribe-button:hover {
             background-color: #45a049;
         }
         #status, #timer {
             text-align: center;
-            margin-top: 20px;
             font-weight: bold;
+            margin-bottom: 10px;
         }
         #result {
-            margin-top: 20px;
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 4px;
             max-height: 300px;
             overflow-y: auto;
             background-color: #f9f9f9;
+            width: 100%;
+            box-sizing: border-box;
         }
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .header-icon {
-            width: 32px;
-            height: 32px;
-        }        
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header-container">
+        <div class="header">
             <img src="{{ url_for('static', filename='header-icon.png') }}" alt="Transcription Icon" class="header-icon">
             <h1>Persian Audio Transcription</h1>
-        </div>        <form id="uploadForm">
+        </div>
+        <div class="file-input-container">
             <input type="file" name="file" accept=".wav,.mp3,.ogg" required>
-            <input type="submit" value="Transcribe">
-        </form>
+            <button type="button" class="file-input-button">Choose File</button>
+            <span class="file-input-label">No file chosen</span>
+        </div>
+        <button type="submit" class="transcribe-button">Transcribe</button>
         <div id="status"></div>
         <div id="timer"></div>
         <div id="result"></div>
     </div>
 
     <script>
-        const form = document.getElementById('uploadForm');
+        const fileInput = document.querySelector('input[type="file"]');
+        const fileInputButton = document.querySelector('.file-input-button');
+        const fileInputLabel = document.querySelector('.file-input-label');
+        const transcribeButton = document.querySelector('.transcribe-button');
         const status = document.getElementById('status');
         const timer = document.getElementById('timer');
         const result = document.getElementById('result');
         let startTime;
         let timerInterval;
 
-        function updateTimer() {
-            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
-            const minutes = Math.floor(elapsedTime / 60);
-            const seconds = elapsedTime % 60;
-            timer.textContent = `Time elapsed: ${minutes}m ${seconds}s`;
-        }
+        fileInputButton.addEventListener('click', () => {
+            fileInput.click();
+        });
 
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                fileInputLabel.textContent = fileInput.files[0].name;
+            } else {
+                fileInputLabel.textContent = 'No file chosen';
+            }
+        });
+
+        transcribeButton.addEventListener('click', () => {
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
             
             status.textContent = 'File received. Starting transcription...';
             result.textContent = '';
@@ -138,6 +169,13 @@
                 result.textContent = 'Please try again later.';
             });
         });
+
+        function updateTimer() {
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsedTime / 60);
+            const seconds = elapsedTime % 60;
+            timer.textContent = `Time elapsed: ${minutes}m ${seconds}s`;
+        }
     </script>
 </body>
 </html>
