@@ -57,14 +57,32 @@
             margin-top: 20px;
             font-weight: bold;
         }
-        #result {
+        #result-container {
             margin-top: 20px;
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        #result-label {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #4CAF50;
+        }
+        #result {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Tahoma', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
             max-height: 300px;
             overflow-y: auto;
-            background-color: #f9f9f9;
+            padding: 10px;
+            background-color: #ffffff;
+            border-radius: 4px;
         }
         .header-container {
             display: flex;
@@ -116,13 +134,17 @@
         </div>
         <form id="uploadForm">
             <div class="file-input-container">
-                <input type="file" name="file" accept=".wav,.mp3,.ogg, .mp4" required>
+                <input type="file" name="file" accept=".wav,.mp3,.ogg,.mp4" required>
                 <button type="button" class="file-input-button">Choose File</button>
-            </div>            <input type="submit" value="Transcribe">
+            </div>
+            <input type="submit" value="Transcribe">
         </form>
         <div id="status"></div>
         <div id="timer"></div>
-        <div id="result"></div>
+        <div id="result-container" style="display: none;">
+            <div id="result-label">Transcript:</div>
+            <div id="result"></div>
+        </div>
     </div>
 
     <script>
@@ -149,6 +171,7 @@
 
         const status = document.getElementById('status');
         const timer = document.getElementById('timer');
+        const resultContainer = document.getElementById('result-container');
         const result = document.getElementById('result');
         let startTime;
         let timerInterval;
@@ -166,6 +189,7 @@
             
             status.textContent = 'File received. Starting transcription...';
             result.textContent = '';
+            resultContainer.style.display = 'none';
             startTime = Date.now();
             timerInterval = setInterval(updateTimer, 1000);
 
@@ -181,7 +205,8 @@
                     result.textContent = 'Error: ' + data.error;
                 } else {
                     status.textContent = 'Transcription complete!';
-                    result.textContent = 'Transcript: ' + data.transcript;
+                    result.textContent = data.transcript;
+                    resultContainer.style.display = 'block';
                 }
             })
             .catch(error => {
