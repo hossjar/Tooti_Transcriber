@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Persian Audio Transcription</title>
+    <title>Tooti Transcription</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <style>
         body {
@@ -76,17 +76,49 @@
             width: 32px;
             height: 32px;
         }
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .file-input-container input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-input-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .file-input-button:hover {
+            background-color: #45a049;
+        }
+        .file-input-label {
+            margin-left: 10px;
+            font-size: 16px;
+            color: #666;
+        }  
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header-container">
             <img src="{{ url_for('static', filename='header-icon.png') }}" alt="Transcription Icon" class="header-icon">
-            <h1>Persian Audio Transcription</h1>
+            <h1>Farsi Transcriber</h1>
         </div>
         <form id="uploadForm">
-            <input type="file" name="file" accept=".wav,.mp3,.ogg" required>
-            <input type="submit" value="Transcribe">
+            <div class="file-input-container">
+                <input type="file" name="file" accept=".wav,.mp3,.ogg, .mp4" required>
+                <button type="button" class="file-input-button">Choose File</button>
+            </div>            <input type="submit" value="Transcribe">
         </form>
         <div id="status"></div>
         <div id="timer"></div>
@@ -95,6 +127,26 @@
 
     <script>
         const form = document.getElementById('uploadForm');
+        const fileInput = form.querySelector('input[type="file"]');
+        const fileInputButton = form.querySelector('.file-input-button');
+        const fileInputLabel = document.createElement('label');
+        fileInputLabel.classList.add('file-input-label');
+        fileInputLabel.textContent = 'No file chosen';
+
+        form.appendChild(fileInputLabel);
+
+        fileInputButton.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                fileInputLabel.textContent = fileInput.files[0].name;
+            } else {
+                fileInputLabel.textContent = 'No file chosen';
+            }
+        });
+
         const status = document.getElementById('status');
         const timer = document.getElementById('timer');
         const result = document.getElementById('result');
