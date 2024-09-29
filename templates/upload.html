@@ -124,6 +124,13 @@
             font-size: 16px;
             color: #666;
         }  
+        .format-selection {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
     </style>
 </head>
 <body>
@@ -137,6 +144,10 @@
                 <input type="file" name="file" accept=".wav,.mp3,.ogg,.mp4" required>
                 <button type="button" class="file-input-button">Choose File</button>
             </div>
+            <div class="format-selection">
+                <label><input type="radio" name="format" value="txt" checked> Text</label>
+                <label><input type="radio" name="format" value="srt"> SRT</label>
+            </div>
             <input type="submit" value="Transcribe">
         </form>
         <div id="status"></div>
@@ -146,6 +157,7 @@
             <div id="result"></div>
         </div>
     </div>
+
 
     <script>
         const form = document.getElementById('uploadForm');
@@ -186,6 +198,7 @@
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
+            const format = formData.get('format');
             
             status.textContent = 'File received. Starting transcription...';
             result.textContent = '';
@@ -193,7 +206,7 @@
             startTime = Date.now();
             timerInterval = setInterval(updateTimer, 1000);
 
-            fetch('/', {
+            fetch(`/?format=${format}`, {
                 method: 'POST',
                 body: formData
             })

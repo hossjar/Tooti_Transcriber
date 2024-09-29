@@ -21,7 +21,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def transcribe_audio(file_path):
+def transcribe_audio(file_path, format='txt'):
     settings = ConnectionSettings(
         url="https://asr.api.speechmatics.com/v2",
         auth_token=SPEECHMATICS_API_KEY,
@@ -31,8 +31,12 @@ def transcribe_audio(file_path):
         "type": "transcription",
         "transcription_config": {
             "language": "fa",  # Persian language code
-        #  "operating_point": "enhanced"
-
+        },
+        "output_config": {
+            "srt_overrides": {
+                "max_line_length": 37,
+                "max_lines": 2
+            }
         }
     }
     
@@ -42,7 +46,7 @@ def transcribe_audio(file_path):
                 audio=file_path,
                 transcription_config=conf,
             )
-            transcript = client.wait_for_completion(job_id, transcription_format='txt')
+            transcript = client.wait_for_completion(job_id, transcription_format=format)
             return transcript
         except HTTPStatusError as e:
             if e.response.status_code == 401:
@@ -64,15 +68,15 @@ def upload_file():
             filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(filename)
             try:
-                
-                transcript = transcribe_audio(filename)
+                format = request.args.get('format', 'txt')
+                transcript = transcribe_audio(filename, format)
                 os.remove(filename)  # Remove the file after transcription
                 return jsonify({'transcript': transcript})
             except Exception as e:
                 os.remove(filename)
-                return jsonify({'error' : str(e)})
-            else:
-                return jsonify({'error' : 'File type not allowed'})
+                return jsonify({'error': str(e)})
+        else:
+            return jsonify({'error': 'File type not allowed'})
     return render_template('upload.html')
 
 if __name__ == '__main__':
