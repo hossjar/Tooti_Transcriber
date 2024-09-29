@@ -134,6 +134,21 @@
             white-space: pre-wrap;
             font-family: monospace;
         }
+
+        #downloadButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        #downloadButton:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
@@ -158,6 +173,7 @@
         <div id="result-container" style="display: none;">
             <div id="result-label">Transcript:</div>
             <div id="result"></div>
+            <button id="downloadButton" type="button">Download</button>
         </div>
     </div>
 
@@ -238,6 +254,22 @@
                 result.textContent = 'Please try again later.';
             });
         });
+        const downloadButton = document.getElementById('downloadButton');
+
+        downloadButton.addEventListener('click', () => {
+            const transcriptText = result.textContent;
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(transcriptText));   
+
+            element.setAttribute('download', 'transcript.txt');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);   
+
+        });
+
+
     </script>
 </body>
 </html>
