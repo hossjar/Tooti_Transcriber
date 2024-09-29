@@ -5,6 +5,7 @@ from httpx import HTTPStatusError
 import os
 from dotenv import load_dotenv
 import time
+import re 
 
 load_dotenv()
 SPEECHMATICS_API_KEY = os.getenv('SPEECHMATICS_API_KEY')
@@ -47,6 +48,11 @@ def transcribe_audio(file_path, format='txt'):
                 transcription_config=conf,
             )
             transcript = client.wait_for_completion(job_id, transcription_format=format)
+            if format == 'srt':
+                lines = transcript.splitlines()
+                transcript = '\n'.join(lines[1:])  # Remove the first line
+                transcript = re.sub(r'\d+\n', '', transcript)  # Remove remaining numbers at the beginning of lines
+            
             return transcript
         except HTTPStatusError as e:
             if e.response.status_code == 401:
