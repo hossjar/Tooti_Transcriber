@@ -130,7 +130,10 @@
             justify-content: center;
             gap: 20px;
         }
-
+        #result.srt-format {
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
@@ -218,7 +221,13 @@
                     result.textContent = 'Error: ' + data.error;
                 } else {
                     status.textContent = 'Transcription complete!';
-                    result.textContent = data.transcript;
+                    if (format === 'srt') {
+                        result.className = 'srt-format';
+                        result.textContent = data.transcript;
+                    } else {
+                        result.className = '';
+                        result.textContent = data.transcript;
+                    }
                     resultContainer.style.display = 'block';
                 }
             })
