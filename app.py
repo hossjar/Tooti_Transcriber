@@ -85,6 +85,6 @@ def upload_file():
             return jsonify({'error': 'File type not allowed'})
     return render_template('upload.html')
 
-if __name__ == '__main__':
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+#     app.run(debug=True)
