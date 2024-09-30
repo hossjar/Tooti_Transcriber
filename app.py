@@ -8,7 +8,7 @@ import time
 import re 
 
 load_dotenv()
-SPEECHMATICS_API_KEY = os.getenv('SPEECHMATICS_API_KEY')
+SPEECHMATICS_API_KEY = os.environ.get('SPEECHMATICS_API_KEY')
 
 
 
