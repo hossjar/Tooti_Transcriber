@@ -10,9 +10,7 @@
     }, 
     {
         "src": "static/*",
-        "use": "@vercel/static",
-        "dest": "/static"
-    }
+        "use": "@vercel/static"    }
     ],
     "routes": [
     {
