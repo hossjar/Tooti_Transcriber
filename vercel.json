@@ -4,7 +4,14 @@
     {
         "src": "app.py",
         "use": "@vercel/python",
-        "config": {"maxLambdaSize": "15mb"}
+        "config": {
+            "maxLambdaSize": "15mb"
+        }
+    }, 
+    {
+        "src": "static/*",
+        "use": "@vercel/static",
+        "dest": "/static"
     }
     ],
     "routes": [
