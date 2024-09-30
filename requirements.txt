@@ -1,3 +1,4 @@
 flask
 speechmatics-python
 httpx
+gunicorn
