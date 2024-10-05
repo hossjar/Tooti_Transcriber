@@ -14,7 +14,7 @@ SPEECHMATICS_API_KEY = os.environ.get('SPEECHMATICS_API_KEY')
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = '/app/uploads'
 ALLOWED_EXTENSIONS = {'wav', 'mp3', 'ogg', 'mp4'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER

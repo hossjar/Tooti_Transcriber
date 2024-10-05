@@ -2,3 +2,4 @@ flask
 speechmatics-python
 httpx
 gunicorn 
+python-dotenv
